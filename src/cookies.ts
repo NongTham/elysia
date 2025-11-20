@@ -164,6 +164,19 @@ export class Cookie<T> implements ElysiaCookie {
 	}
 
 	set expires(expires) {
+		// Compare timestamps instead of Date objects to detect actual changes
+		const currentExpires = this.cookie.expires
+		const currentTime = currentExpires?.getTime()
+		const newTime = expires?.getTime()
+
+		// Only proceed if the effective expiry actually changes
+		if (
+			currentTime === newTime ||
+			(currentExpires === undefined && expires === undefined)
+		) {
+			return
+		}
+
 		this.setCookie.expires = expires
 	}
 
